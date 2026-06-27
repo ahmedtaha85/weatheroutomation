@@ -38,17 +38,17 @@ export async function subscribe(formData: FormData): Promise<SubscribeResult> {
 
     // 2. n8n u dir si uu u diro email-ka xaqiijinta (Verification Email)
     // Hubi in URL-kan uu yahay midka saxda ah ee n8n
-    const n8nResponse = await fetch('https://thetaaha.app.n8n.cloud/webhook-test/SendVerification', {
+    const n8nResponse = await fetch('https://thetaaha.app.n8n.cloud/webhook/SendVerification', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, token }),
     });
 
     if (!n8nResponse.ok) {
-      console.error("n8n wuu fashilmay");
-      return { success: false, error: 'Email-ka xaqiijinta laguma diri karin.' };
+      const errorData = await n8nResponse.text(); // Waxaan akhrinaynaa waxa n8n soo celiyay
+      console.error("n8n wuu fashilmay:", errorData);
+      return { success: false, error: 'n8n error: ' + errorData };
     }
-
     return { success: true };
   } catch (err) {
     console.error("Khalad guud:", err);
