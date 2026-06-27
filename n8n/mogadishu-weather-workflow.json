@@ -1,0 +1,213 @@
+{
+  "name": "Mogadishu Weather — Jawi Skies",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7,13,18 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const hour = new Date().toLocaleString('en-US', { timeZone: 'Africa/Mogadishu', hour: 'numeric', hour12: false }).split(',')[0].trim();\nconst h = parseInt(hour, 10);\n\nlet period, subject;\nif (h >= 6 && h < 10) {\n  period = 'Subaxnimo';\n  subject = 'Cimilada Subaxnimo — Mogadishu';\n} else if (h >= 11 && h < 15) {\n  period = 'Duhurnimo';\n  subject = 'Cimilada Duhurnimo — Mogadishu';\n} else {\n  period = 'Habeenimo';\n  subject = 'Cimilada Habeenimo — Mogadishu';\n}\n\nreturn [{ json: { period, subject } }];"
+      },
+      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "name": "Set Period",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/weather?lat=2.0469&lon=45.3182&appid={{ $env.OPENWEATHERMAP_API_KEY }}&units=metric&lang=so",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "name": "Fetch Weather",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/subscribers?is_active=eq.true&select=name,email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0004-4000-8000-000000000004",
+      "name": "Fetch Subscribers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const weather = $('Fetch Weather').first().json;\nconst period = $('Set Period').first().json;\nconst subscribers = $input.all().map(item => item.json);\n\nif (!subscribers.length) {\n  return [];\n}\n\nconst temp = Math.round(weather.main.temp);\nconst feelsLike = Math.round(weather.main.feels_like);\nconst description = weather.weather[0].description;\nconst humidity = weather.main.humidity;\nconst wind = weather.wind.speed;\n\nreturn subscribers.map(sub => ({\n  json: {\n    name: sub.name,\n    email: sub.email,\n    temp,\n    feelsLike,\n    description,\n    humidity,\n    wind,\n    period: period.period,\n    subject: period.subject\n  }\n}));"
+      },
+      "id": "a1b2c3d4-0005-4000-8000-000000000005",
+      "name": "Prepare Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "a1b2c3d4-0006-4000-8000-000000000006",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1100, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.RESEND_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{ $env.RESEND_FROM_EMAIL }}\",\n  \"to\": \"{{ $json.email }}\",\n  \"subject\": \"{{ $json.subject }}\",\n  \"html\": \"<div style=\\\"font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px;\\\"><h1 style=\\\"color:#3b9fd9;\\\">Jawi Skies</h1><h2>Salaan {{ $json.name }}!</h2><p>Warbixinta cimilada <strong>{{ $json.period }}</strong> ee Mogadishu:</p><div style=\\\"background:#f0f8ff;border-radius:12px;padding:20px;margin:16px 0;\\\"><p style=\\\"font-size:32px;font-weight:bold;margin:0;\\\">{{ $json.temp }}&deg;C</p><p style=\\\"color:#666;margin:4px 0 0;\\\">Dareenka: {{ $json.feelsLike }}&deg;C</p><p style=\\\"text-transform:capitalize;margin:8px 0 0;\\\">{{ $json.description }}</p></div><table style=\\\"width:100%;font-size:14px;\\\"><tr><td>Qoyaanka</td><td style=\\\"text-align:right;\\\">{{ $json.humidity }}%</td></tr><tr><td>Dabaysha</td><td style=\\\"text-align:right;\\\">{{ $json.wind }} m/s</td></tr></table><p style=\\\"color:#999;font-size:12px;margin-top:24px;\\\">Jawi Skies — Cimilada Mogadishu</p></div>\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "a1b2c3d4-0007-4000-8000-000000000007",
+      "name": "Send Email (Resend)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Period",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Period": {
+      "main": [
+        [
+          {
+            "node": "Fetch Weather",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Weather": {
+      "main": [
+        [
+          {
+            "node": "Fetch Subscribers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Subscribers": {
+      "main": [
+        [
+          {
+            "node": "Prepare Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Emails": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Send Email (Resend)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send Email (Resend)": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Africa/Mogadishu",
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1
+}
