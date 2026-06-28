@@ -6,7 +6,7 @@ export default function Header() {
 
   return (
     <header className="relative flex items-center justify-between px-6 py-4">
-      <img src="/assets/images/Logo/JAWISKIES-01.png" alt="Logo" className="w-[120px] h-auto" />
+      <img src="/assets/images/Logo/JAWISKIES-03.png" alt="Logo" className="w-[220px] h-auto" />
 
       {/* Desktop Menu */}
       <nav className="hidden md:flex gap-6 text-sm font-medium">
