@@ -1,7 +1,8 @@
 'use client';
 
 import WeatherDecorations from './WeatherDecorations';
-import { DECOR_CLOUD, DECOR_RAIN, DECOR_SUN } from '../../assets/images/Logo/paths';
+// Halkan ayaan ka saxnay import-ka si uu u tilmaamo app/paths.ts
+import { DECOR_CLOUD, DECOR_RAIN, DECOR_SUN } from '../paths';
 
 function hideOnError(e: React.SyntheticEvent<HTMLImageElement>) {
   e.currentTarget.style.display = 'none';
