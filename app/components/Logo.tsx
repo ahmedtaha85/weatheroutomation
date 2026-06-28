@@ -20,7 +20,7 @@ export default function Logo({ size = 'md' }: LogoProps) {
       <Image
         // Path-ka saxda ah markuu ku jiro public folder-ka
         src="/assets/images/Logo/JAWISKIES-03.png"
-        alt="Jawi Skies Logo"
+        alt="Jawi Skies "
         fill
         className="object-contain"
         priority
