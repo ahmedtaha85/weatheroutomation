@@ -5,7 +5,7 @@ export default function Footer() {
       <img
         src="/assets/images/Logo/JAWISKIES-03.png"
         alt="Jawi Skies"
-        className="w-[180px] h-auto object-contain mb-4 opacity-80"
+        className="w-[250px] h-auto object-contain mb-4 opacity-80"
       />
       <p className="text-xs text-gray-400">&copy; 2026 Jawi Skies. Mogadishu, Somalia.</p>
       <p className="text-[10px] text-gray-500 mt-1">Powered by Ahmed Taaha Abass</p>

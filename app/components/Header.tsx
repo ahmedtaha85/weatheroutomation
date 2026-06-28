@@ -5,7 +5,7 @@ export default function Header() {
       <img
         src="/assets/images/Logo/JAWISKIES-03.png"
         alt="Jawi Skies"
-        className="w-[140px] h-auto object-contain"
+        className="w-[250px] h-auto object-contain"
       />
       <nav className="flex gap-6 text-sm font-medium">
         <a href="/about">About</a>
