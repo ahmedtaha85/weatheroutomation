@@ -7,10 +7,10 @@ type LogoProps = {
 
 
 const sizes = {
-  sm: { h: 50, w: 250 },  // Header (aad u weynay si uu u soo baxo)
-  md: { h: 80, w: 320 },  // Footer
-  lg: { h: 120, w: 480 }, // Haddii aad meel kale u baahato
-  xl: { h: 160, w: 640 }
+  sm: { h: 150, w: 400 },  // Header (aad u weynay si uu u soo baxo)
+  md: { h: 180, w: 320 },  // Footer
+  lg: { h: 200, w: 480 }, // Haddii aad meel kale u baahato
+  xl: { h: 260, w: 640 }
 };
 
 export default function Logo({ size = 'md' }: LogoProps) {
