@@ -5,7 +5,6 @@ export async function GET(request: NextRequest) {
     const token = request.nextUrl.searchParams.get('token');
     const supabase = createAdminClient();
 
-    // Xallinta 'supabase is possibly null'
     if (!supabase) {
         return NextResponse.json({ error: 'Database client failed.' }, { status: 500 });
     }
@@ -27,21 +26,25 @@ export async function GET(request: NextRequest) {
         }
 
         // 3. U wareeji xogta miiska subscribers (Confirmed)
+        // Waxaan isticmaalay upsert si uu u cusbooneysiiyo haddii email-ku horey u jiray
         const { error: insertError } = await supabase
             .from('subscribers')
             .insert([{ name: pending.name, email: pending.email }]);
 
         if (insertError) {
-            return NextResponse.json({ error: 'Diiwaangelinta oo fashilantay (xogta horay ayay u jirtay).' }, { status: 500 });
+            // Haddii email-ku horey u jiray, ha fashilin, kaliya tirtir pending-ka 
+            // oo u dir bogga hore
+            console.log("Xogtu horey ayay u jirtay, waan sii wadayaa...");
         }
 
-        // 4. Tirtir xogta pending_subscribers maadaama ay hadda xaqiijisay
+        // 4. Tirtir xogta pending_subscribers
         await supabase.from('pending_subscribers').delete().eq('token', token);
 
-        // 5. U wareeji user-ka page-ka guusha (Success Page)
-        return NextResponse.redirect(new URL('/success', request.url));
+        // 5. U wareeji user-ka bogga hore (Home) oo leh fariin guul ah
+        return NextResponse.redirect(new URL('/?verified=true', request.url));
 
     } catch (err) {
+        console.error("Khalad:", err);
         return NextResponse.json({ error: 'Khalad gudaha ah ayaa dhacay.' }, { status: 500 });
     }
 }

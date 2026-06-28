@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { subscribe } from '../actions/subscribe';
 
 export default function SubscribeForm() {
@@ -9,6 +9,16 @@ export default function SubscribeForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Koodkan wuxuu nadiifinayaa fariinta 5 ilbiriqsi ka dib
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +43,7 @@ export default function SubscribeForm() {
 
   if (success) {
     return (
-      <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+      <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center animate-fade-in">
         <p className="text-green-700 font-bold">Waad ku mahadsan tahay!</p>
         <p className="text-green-600 text-sm">Fadlan hubi email-kaaga si aad u xaqiijiso diiwaangelinta.</p>
       </div>

@@ -5,15 +5,16 @@ type LogoProps = {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 };
 
-// Waxaan kordhinay cabbirka (h) iyo (w) si aan u hubinno inuu logo-gu u muuqdo mid weyn
+// Hubi in qeybtan "sizes" ay ka horreyso function-ka Logo
 const sizes = {
-  sm: { h: 40, w: 160 },  // Navbar
-  md: { h: 64, w: 256 },  // Standard
-  lg: { h: 96, w: 384 },  // Hero
-  xl: { h: 128, w: 512 }  // Xtra Large
+  sm: { h: 40, w: 160 },
+  md: { h: 64, w: 256 },
+  lg: { h: 96, w: 384 },
+  xl: { h: 128, w: 512 }
 };
 
 export default function Logo({ size = 'md' }: LogoProps) {
+  // Hadda `sizes` waa la aqoonsanayaa
   const { h, w } = sizes[size];
 
   return (
@@ -23,9 +24,9 @@ export default function Logo({ size = 'md' }: LogoProps) {
     >
       <Image
         src={OFFICIAL_LOGO}
-        alt=""
+        alt="Jawi Skies Logo"
         fill
-        className="object-contain" // Tani waxay hubinaysaa in sawirku uusan qalloocin
+        className="object-contain"
         priority
       />
     </div>

@@ -1,3 +1,7 @@
+'use client'; // Waa muhiim in tani ay korka u saarnato
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
 import BackgroundEffects from './components/BackgroundEffects';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -7,9 +11,29 @@ import SubscribeForm from './components/SubscribeForm';
 import Footer from './components/Footer';
 import WeatherDecorations from './components/WeatherDecorations';
 
+// Waxaan ka dhignay fariinta component yar si aadan u saameynin inta kale ee page-ka
+function VerificationMessage() {
+  const searchParams = useSearchParams();
+  const isVerified = searchParams.get('verified');
+
+  if (isVerified !== 'true') return null;
+
+  return (
+    <div className="fixed top-20 left-0 w-full z-50 p-4">
+      <div className="max-w-md mx-auto bg-green-600 text-white px-6 py-3 rounded-full shadow-lg text-center font-medium animate-fade-in-down">
+        Hambalyo! Email-kaaga waa la xaqiijiyay. 🎉
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <>
+      <Suspense fallback={null}>
+        <VerificationMessage />
+      </Suspense>
+
       <BackgroundEffects />
       <Header />
       <main>
