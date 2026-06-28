@@ -5,11 +5,12 @@ type LogoProps = {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 };
 
+
 const sizes = {
-  sm: { h: 40, w: 160 },
-  md: { h: 64, w: 256 },
-  lg: { h: 96, w: 384 },
-  xl: { h: 128, w: 512 }
+  sm: { h: 50, w: 250 },  // Header (aad u weynay si uu u soo baxo)
+  md: { h: 80, w: 320 },  // Footer
+  lg: { h: 120, w: 480 }, // Haddii aad meel kale u baahato
+  xl: { h: 160, w: 640 }
 };
 
 export default function Logo({ size = 'md' }: LogoProps) {

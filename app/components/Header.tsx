@@ -3,7 +3,8 @@ import Logo from './Logo';
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#091633]/80 border-b border-[#1157f2]/20">
-      <nav className="flex justify-between items-center py-3 px-6 md:px-12 max-w-6xl mx-auto">
+      {/* Waxaan ka dhigay py-6 si ay logada weyn ugu haboonaato */}
+      <nav className="flex justify-between items-center py-6 px-6 md:px-12 max-w-6xl mx-auto">
         <a href="/" className="hover:opacity-90 transition-opacity">
           <Logo size="sm" />
         </a>

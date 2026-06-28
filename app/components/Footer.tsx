@@ -12,12 +12,15 @@ export default function Footer() {
         </div>
         <div className="flex gap-8 text-sm text-white/80">
           <a href="/privacy" className="hover:text-white transition-colors">Privacy</a>
-          <a href="/terms" className="hover:text-white transition-colors">Terms</a>
+          <a href="/privacy" className="hover:text-white transition-colors">Terms</a>
         </div>
       </div>
       <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-white/5 text-center text-white/40 text-xs">
-        © {new Date().getFullYear()} Weather Automation. All rights reserved.
+        © {new Date().getFullYear()} Weather Automation. All rights reserved.| Developed by Ahmed Taaha
+      </div>
+      <div className="text-muted-foreground mt-4">
+        Questions? Reach out: <a href="mailto:jawiskies@gmail.com" className="text-[#1157f2] hover:underline">jawiskies@gmail.com</a>
       </div>
     </footer>
   );
-}
+} 
