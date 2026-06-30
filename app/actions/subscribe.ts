@@ -72,7 +72,7 @@ export async function subscribe(
     console.log('====================================');
 
     const webhookUrl =
-      'POST https://thetaaha.app.n8n.cloud/webhook/Subscribe';
+      'https://thetaaha.app.n8n.cloud/webhook/Subscribe';
 
     console.log('Webhook URL:', webhookUrl);
 
