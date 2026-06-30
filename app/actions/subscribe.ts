@@ -72,7 +72,7 @@ export async function subscribe(
     console.log('====================================');
 
     const webhookUrl =
-      'https://thetaaha.app.n8n.cloud/webhook/Subscribe';
+      'https://ahmedtahaabas.app.n8n.cloud/webhook/Subscribe';
 
     console.log('Webhook URL:', webhookUrl);
 
@@ -144,4 +144,4 @@ export async function subscribe(
       error: 'Waxa dhacay khalad aan la filayn.',
     };
   }
-}
+} ""
